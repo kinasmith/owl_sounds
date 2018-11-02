@@ -19,14 +19,21 @@ AudioConnection          patchCord2(playSdWav1, 1, i2s1, 1);
 AudioControlSGTL5000     sgtl5000_1;
 
 int sensorPin = 8;
-bool enable = true;
 bool motion = false;
 bool printed = false;
 int triggers = 0;
 int ledPin = 13;
 elapsedMillis triggerTime;
-uint32_t interval = 60000*5;
-int filenumber = 3;  // while file to play
+uint32_t interval = 100*5;
+int filenumber = 0;
+const char * owls[5] = {
+    "Owl01.WAV",
+    "Owl02.WAV",
+    "Owl03.WAV",
+    "Owl04.WAV",
+    "Owl05.WAV"
+};
+
 const char * filelist[12] = {
     "B01.WAV",
     "B02.WAV",
@@ -71,7 +78,7 @@ void loop() {
             triggers++;
             Serial.print("motion: "); Serial.println(triggers);
             Serial.print("time: "); Serial.println(triggerTime);
-            playSound(random(0,12));
+            playSound(triggers % 5);
             triggerTime = 0;
             printed = true;
         } else {
@@ -88,7 +95,7 @@ void loop() {
 
 void playSound(int fileNum) {
     if (!playSdWav1.isPlaying()) {
-        const char *filename = filelist[fileNum];
+        const char *filename = owls[fileNum];
         playSdWav1.play(filename);
         delay(10);
     }
